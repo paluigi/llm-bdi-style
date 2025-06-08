@@ -84,9 +84,9 @@ str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
 print(f"Time: {str_toc}")
 
 # Load dataset
-bdi_dataset = pd.read_excel(os.path.join(input_path,'testi_randomized.xlsx').to_dict(orient='records'))
+bdi_dataset = pd.read_excel(os.path.join(input_path,'testi_randomized.xlsx')).to_dict(orient='records')
 
-instruction_template = """SSei un economista della Banca d’Italia incaricato di riformulare testi prodotti da un giovane analista in fase di bozza.
+instruction_template = """Sei un economista della Banca d’Italia incaricato di riformulare testi prodotti da un giovane analista in fase di bozza.
 
 La bozza riportata di seguito contiene tutte le informazioni rilevanti che devono essere mantenute nel testo finale:
 
@@ -146,8 +146,8 @@ trainer = SFTTrainer(
         per_device_train_batch_size = 2,
         gradient_accumulation_steps = 4, # Use GA to mimic batch size!
         warmup_steps = 5,
-        # num_train_epochs = 1, # Set this for 1 full training run.
-        max_steps = 30,
+        num_train_epochs = 4, # Set this for 1 full training run.
+        max_steps = 50,
         learning_rate = 2e-4, # Reduce to 2e-5 for long training runs
         logging_steps = 1,
         optim = "adamw_8bit",
