@@ -101,6 +101,16 @@ Istruzioni:
 Scrivi il testo in italiano, in forma discorsiva, con uno stile formale ma accessibile, come nelle pubblicazioni ufficiali della Banca d’Italia.
 Non inserire preamboli o conclusioni nella tua risposta, ma solo il testo riformulato della bozza.
 
+### Esempio
+
+**Bozza:**
+{os_bozza}
+
+**Testo riformulato:**
+{os_testo}
+
+### Ora tocca a te.
+
 **Bozza:**
 {bozza}
 
@@ -112,7 +122,7 @@ bdi_dataset_formatted = [
         "conversations": [
             {
                 "role": "user",
-                "content": instruction_template.format(bozza=row["input"])
+                "content": instruction_template.format(os_bozza=row["os_input"], os_test=row["os_testo"], bozza=row["input"])
             },
             {
                 "role": "assistant",
@@ -193,8 +203,8 @@ print(
 print(f"Peak reserved memory = {used_memory} GB.")
 
 # Save model adapter
-model.save_pretrained(os.path.join(model_path, f"{model_name}_adapter"))  # Local saving
-tokenizer.save_pretrained(os.path.join(model_path, f"{model_name}_adapter"))
+model.save_pretrained(os.path.join(model_path, f"{model_name}_adapter_os"))  # Local saving
+tokenizer.save_pretrained(os.path.join(model_path, f"{model_name}_adapter_os"))
 
 # Logging
 toc = time.time()
@@ -203,7 +213,7 @@ str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
 print(f"Time: {str_toc}")
 
 # Save merged model
-model.save_pretrained_merged(os.path.join(model_path, f"{model_name}_finetuned}"), tokenizer)
+model.save_pretrained_merged(os.path.join(model_path, f"{model_name}_finetuned_os"), tokenizer)
 
 # Logging
 toc = time.time()
