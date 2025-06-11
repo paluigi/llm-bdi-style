@@ -203,7 +203,7 @@ str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
 print(f"Time: {str_toc}")
 
 # Save merged model
-model.save_pretrained_merged(os.path.join(model_path, f"{model_name}_finetuned}"), tokenizer)
+model.save_pretrained_merged(os.path.join(model_path, f"{model_name}_finetuned"), tokenizer)
 
 # Logging
 toc = time.time()

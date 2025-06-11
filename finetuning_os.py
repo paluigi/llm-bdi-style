@@ -122,7 +122,7 @@ bdi_dataset_formatted = [
         "conversations": [
             {
                 "role": "user",
-                "content": instruction_template.format(os_bozza=row["os_input"], os_test=row["os_testo"], bozza=row["input"])
+                "content": instruction_template.format(os_bozza=row["os_input"], os_testo=row["os_testo"], bozza=row["input"])
             },
             {
                 "role": "assistant",
