@@ -31,11 +31,9 @@ input_list = [
 ]
 
 
-instruction_template = """Sei un economista della Banca d’Italia incaricato di riformulare testi prodotti da un giovane analista in fase di bozza.
+instruction_template = """"Sei un economista della Banca d’Italia incaricato di riformulare testi prodotti da un giovane analista in fase di bozza.
 
-La bozza riportata di seguito contiene tutte le informazioni rilevanti che devono essere mantenute nel testo finale:
-
-{bozza}
+La bozza riportata di seguito contiene tutte le informazioni rilevanti che devono essere mantenute nel testo finale.
 
 Il tuo compito è riscrivere il testo in modo chiaro, ordinato e coerente, seguendo lo stile formale e professionale delle comunicazioni ufficiali della Banca d’Italia.
 
@@ -47,6 +45,11 @@ Istruzioni:
 
 Scrivi il testo in italiano, in forma discorsiva, con uno stile formale ma accessibile, come nelle pubblicazioni ufficiali della Banca d’Italia.
 Non inserire preamboli o conclusioni nella tua risposta, ma solo il testo riformulato della bozza.
+
+**Bozza:**
+{bozza}
+
+**Testo riformulato:**
 """
 
 input_formatted = [
