@@ -62,7 +62,7 @@ lora_config = LoraConfig(
 
 # Training arguments for bfloat16
 training_args = TrainingArguments(
-    output_dir=os.path.join(model_path, f"{model_name}_adapter_bf16"), # New directory for this run
+    output_dir=os.path.join(model_path, f"{model_name}_adapter_bf16_os"), # New directory for this run
     per_device_train_batch_size=2,        # IMPORTANT: Reduced batch size for higher memory usage
     gradient_accumulation_steps=4,        # Increase accumulation to maintain effective batch size
     warmup_steps = 5,
@@ -233,7 +233,7 @@ model_with_adapter = PeftModel.from_pretrained(base_model, adapter_path)
 merged_model = model_with_adapter.merge_and_unload()
 print("Merging complete.")
 
-merged_model_path = os.path.join(model_path, f"{model_name}_merged_bf16")
+merged_model_path = os.path.join(model_path, f"{model_name}_merged_bf16_os")
 os.makedirs(merged_model_path, exist_ok=True)
 merged_model.save_pretrained(merged_model_path)
 tokenizer.save_pretrained(merged_model_path)
