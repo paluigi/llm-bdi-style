@@ -207,8 +207,8 @@ print(
 print(f"Peak reserved memory = {used_memory} GB.")
 
 # Save model adapter
-model.save_pretrained(os.path.join(model_path, f"{model_name}_adapter_os"))  # Local saving
-tokenizer.save_pretrained(os.path.join(model_path, f"{model_name}_adapter_os"))
+model.save_pretrained(os.path.join(model_path, f"{model_name}_adapter_os_val"))  # Local saving
+tokenizer.save_pretrained(os.path.join(model_path, f"{model_name}_adapter_os_val"))
 
 # Logging
 toc = time.time()
@@ -217,7 +217,7 @@ str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
 print(f"Time: {str_toc}")
 
 # Save merged model
-model.save_pretrained_merged(os.path.join(model_path, f"{model_name}_finetuned_os"), tokenizer)
+model.save_pretrained_merged(os.path.join(model_path, f"{model_name}_finetuned_os_val"), tokenizer)
 
 # Logging
 toc = time.time()

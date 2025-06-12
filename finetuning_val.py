@@ -132,7 +132,10 @@ def formatting_prompts_func(examples):
     return { "text" : texts, }
 
 dataset = bdi_dataset_formatted_dataset.map(formatting_prompts_func, batched = True)
-
+# Split dataset into train and validation (90% train, 10% validation)
+split_dataset = dataset.train_test_split(test_size=0.1, seed=3407)
+train_dataset = split_dataset["train"]
+val_dataset = split_dataset["test"]
 # Logging
 toc = time.time()
 print(f"Dataset loaded, {toc-tic:.1f} seconds elapsed.")
@@ -142,8 +145,8 @@ print(f"Time: {str_toc}")
 trainer = SFTTrainer(
     model = model,
     tokenizer = tokenizer,
-    train_dataset = dataset,
-    eval_dataset = None, # Can set up evaluation!
+    train_dataset = train_dataset,
+    eval_dataset = val_dataset, # Can set up evaluation!
     args = SFTConfig(
         dataset_text_field = "text",
         per_device_train_batch_size = 2,
@@ -193,8 +196,8 @@ print(
 print(f"Peak reserved memory = {used_memory} GB.")
 
 # Save model adapter
-model.save_pretrained(os.path.join(model_path, f"{model_name}_adapter"))  # Local saving
-tokenizer.save_pretrained(os.path.join(model_path, f"{model_name}_adapter"))
+model.save_pretrained(os.path.join(model_path, f"{model_name}_adapter_val"))  # Local saving
+tokenizer.save_pretrained(os.path.join(model_path, f"{model_name}_adapter_val"))
 
 # Logging
 toc = time.time()
@@ -203,7 +206,7 @@ str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
 print(f"Time: {str_toc}")
 
 # Save merged model
-model.save_pretrained_merged(os.path.join(model_path, f"{model_name}_finetuned"), tokenizer)
+model.save_pretrained_merged(os.path.join(model_path, f"{model_name}_finetuned_val"), tokenizer)
 
 # Logging
 toc = time.time()
