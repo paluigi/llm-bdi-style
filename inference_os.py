@@ -69,6 +69,7 @@ Non inserire preamboli o conclusioni nella tua risposta, ma solo il testo riform
 
 # Load examples for one-shot prompting
 all_df = pd.read_excel("data/testi_all.xlsx")
+all_dicts = all_df.to_dict(orient="records")
 client = QdrantClient(":memory:")  # Qdrant is running from RAM.
 emb = TextEmbedding("jinaai/jina-embeddings-v3", specific_model_path=embedding_path)
 
@@ -80,12 +81,26 @@ _ = client.create_collection(
     ),  # size and distance are model dependent
 )
 
+# Embedding inputs for search
+_ = client.upload_collection(
+    collection_name="examples",
+    vectors=[emb.embed(doc["input"]).send(None) for doc in all_dicts],
+    payload=all_dicts,
+    ids=range(len(all_dicts)),
+)
+
+# Logging
+toc = time.time()
+print(f"Qdrant database created, {toc-tic:.1f} seconds elapsed.")
+str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
+print(f"Time: {str_toc}")
+
 input_os_list = []
 
 for i in input_list:
     os_dict = client.query_points(
         collection_name="examples",
-        query=emb.embed(i["testo"]).send(None),
+        query=emb.embed(i).send(None),
         limit=1,
     ).points[0].payload
     new_row = {
@@ -107,6 +122,12 @@ input_formatted = [
     for row in input_os_list
 
 ]
+
+# Logging
+toc = time.time()
+print(f"Input list built with vecotor search, {toc-tic:.1f} seconds elapsed.")
+str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
+print(f"Time: {str_toc}")
 
 
 # Gemma generation
