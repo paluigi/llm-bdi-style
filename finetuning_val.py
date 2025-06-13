@@ -15,7 +15,8 @@ import torch
 import pandas as pd
 from datasets import Dataset
 from trl import SFTTrainer, SFTConfig
-
+import evaluate
+metric = evaluate.load("accuracy")
 
 tic = time.time()
 str_tic = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tic))
@@ -136,6 +137,14 @@ dataset = bdi_dataset_formatted_dataset.map(formatting_prompts_func, batched = T
 split_dataset = dataset.train_test_split(test_size=0.1, seed=3407)
 train_dataset = split_dataset["train"]
 val_dataset = split_dataset["test"]
+
+
+def compute_metrics(eval_pred):
+    logits, labels = eval_pred
+    predictions = np.argmax(logits, axis=-1)
+    return metric.compute(predictions=predictions, references=labels)
+
+
 # Logging
 toc = time.time()
 print(f"Dataset loaded, {toc-tic:.1f} seconds elapsed.")
@@ -147,6 +156,7 @@ trainer = SFTTrainer(
     tokenizer = tokenizer,
     train_dataset = train_dataset,
     eval_dataset = val_dataset, # Can set up evaluation!
+    compute_metrics=compute_metrics,
     args = SFTConfig(
         dataset_text_field = "text",
         per_device_train_batch_size = 2,
