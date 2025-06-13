@@ -135,7 +135,7 @@ def format_as_text(row, prompt_template=instruction_template):
 
 # Apply the formatting
 dataset = Dataset.from_pandas(bdi_dataset)
-formatted_dataset = dataset.map(format_as_text, remove_columns=bdi_dataset.column_names)
+formatted_dataset = dataset.map(format_as_text, remove_columns=dataset.column_names)
 
 # --- New: Split the dataset ---
 split_dataset = formatted_dataset.train_test_split(test_size=0.1, seed=42) # Use a seed for reproducibility
