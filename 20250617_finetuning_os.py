@@ -129,7 +129,6 @@ sft_config = SFTConfig(
     lr_scheduler_type="linear",
     optim="adamw_torch",
     completion_only_loss=True,
-    save_pretrained=True,
     logging_steps=1,
     eval_steps=1,
     eval_strategy="steps",
