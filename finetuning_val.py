@@ -16,6 +16,7 @@ import pandas as pd
 from datasets import Dataset
 from trl import SFTTrainer, SFTConfig
 import evaluate
+import numpy as np
 metric = evaluate.load("accuracy")
 
 tic = time.time()

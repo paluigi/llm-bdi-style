@@ -16,6 +16,8 @@ import pandas as pd
 from datasets import Dataset
 from trl import SFTTrainer, SFTConfig
 import evaluate
+import numpy as np
+
 metric = evaluate.load("accuracy")
 
 tic = time.time()
@@ -165,6 +167,7 @@ trainer = SFTTrainer(
     tokenizer = tokenizer,
     train_dataset = train_dataset,
     eval_dataset = val_dataset, # Can set up evaluation!
+    compute_metrics=compute_metrics,
     args = SFTConfig(
         dataset_text_field = "text",
         per_device_train_batch_size = 2,
