@@ -430,11 +430,11 @@ def main():
     # # Gemma
     # model_name = "gemma-3-12b-it"
     # chat_template = "gemma3"
-    OUTPUT_DIR = "leonardo_work/try25_boigenai/Luigi"
+    OUTPUT_DIR = "/leonardo_work/try25_boigenai/Luigi"
     # Configuration - Modify these paths according to your setup
     config = {
-        "model_path": os.path.join("leonardo_work/try25_boigenai/Luigi", model_name) ,  # Path to your downloaded model
-        "excel_file_path": os.path.join("leonardo/home/userexternal/lpalumbo/llm-bdi-style/data", "testi_randomized.xlsx"),
+        "model_path": os.path.join("/leonardo_work/try25_boigenai/Luigi", model_name) ,  # Path to your downloaded model
+        "excel_file_path": os.path.join("/leonardo/home/userexternal/lpalumbo/llm-bdi-style/data", "testi_randomized.xlsx"),
         "output_dir": OUTPUT_DIR,  # Training output directory
         "adapter_output_dir": os.path.join(OUTPUT_DIR, f"{model_name}_adapter_20250617"),  # LORA adapter output directory
         "merged_model_output_dir": os.path.join(OUTPUT_DIR, f"{model_name}_finetuned_20250617")

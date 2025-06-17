@@ -26,9 +26,9 @@ chat_template = "qwen-2.5"
 # chat_template = "gemma3"
 
 
-MODEL_PATH = os.path.join("leonardo_work/try25_boigenai/Luigi", model_name) 
-EXCEL_PATH =  os.path.join("leonardo/home/userexternal/lpalumbo/llm-bdi-style/data", "testi_randomized.xlsx")
-OUTPUT_DIR = os.path.join("leonardo_work/try25_boigenai/Luigi", ) 
+MODEL_PATH = os.path.join("/leonardo_work/try25_boigenai/Luigi", model_name) 
+EXCEL_PATH =  os.path.join("/leonardo/home/userexternal/lpalumbo/llm-bdi-style/data", "testi_randomized.xlsx")
+OUTPUT_DIR = os.path.join("/leonardo_work/try25_boigenai/Luigi", ) 
 ADAPTER_DIR = os.path.join(OUTPUT_DIR, f"{model_name}_adapter_os_20250617")
 MERGED_DIR = os.path.join(OUTPUT_DIR, f"{model_name}_finetuned_os_20250617")
 LORA_R = 8
