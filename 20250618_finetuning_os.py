@@ -261,14 +261,25 @@ class LoraFineTuner:
         """Create SFT configuration"""
         sft_config = SFTConfig(
             output_dir=self.output_dir,
+            max_seq_length=4096,
+            packing=False,  # Set to True if you want to pack sequences
+            dataset_text_field="text",
+        )
+        
+        return sft_config
+    
+    def create_training_arguments(self):
+        """Create training arguments separately"""
+        training_args = TrainingArguments(
+            output_dir=self.output_dir,
             max_steps = 600,
             per_device_train_batch_size=2,
             per_device_eval_batch_size=1,
             gradient_accumulation_steps=4,
             optim="paged_adamw_32bit",
-            #save_steps=500,
-            logging_steps=1,  # More frequent logging to see training progress
-            learning_rate=2e-5,
+            save_steps=500,
+            logging_steps=10,  # More frequent logging to see training progress
+            learning_rate=2e-4,
             weight_decay=0.001,
             fp16=False,
             bf16=True,
@@ -279,20 +290,16 @@ class LoraFineTuner:
             report_to="none",
             evaluation_strategy="steps",  # Evaluate at regular steps
             eval_steps=5,  # Evaluate every 5 steps
-            save_strategy="steps",
             load_best_model_at_end=True,
             metric_for_best_model="eval_loss",
             greater_is_better=False,
             seed=42,
             data_seed=42,
             dataloader_num_workers=0,
-            max_seq_length=4096,
-            packing=False,  # Set to True if you want to pack sequences
-            dataset_text_field="text",
             remove_unused_columns=False,
         )
         
-        return sft_config
+        return training_args
 
     def train_model(self):
         """Perform LORA fine-tuning using SFTTrainer"""
@@ -301,8 +308,9 @@ class LoraFineTuner:
         # Setup LORA
         lora_config = self.setup_lora_config()
         
-        # Create SFT configuration
+        # Create SFT configuration and training arguments
         sft_config = self.create_sft_config()
+        training_args = self.create_training_arguments()
         
         # Initialize custom callback for detailed logging
         progress_callback = TrainingProgressCallback()
@@ -312,10 +320,13 @@ class LoraFineTuner:
             model=self.model,
             train_dataset=self.train_dataset,
             eval_dataset=self.eval_dataset,
-            args=sft_config,
+            args=training_args,  # Use TrainingArguments instead of SFTConfig for training params
             tokenizer=self.tokenizer,
             data_collator=None,  # Will use default
             callbacks=[progress_callback],  # Add custom callback
+            max_seq_length=sft_config.max_seq_length,
+            packing=sft_config.packing,
+            dataset_text_field=sft_config.dataset_text_field,
         )
         
         # Print initial training information
