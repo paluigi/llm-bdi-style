@@ -24,7 +24,6 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, TaskType
 from trl import SFTTrainer, SFTConfig
-from sklearn.model_selection import train_test_split
 import evaluate
 from typing import Dict, List, Optional
 
