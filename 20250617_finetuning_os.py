@@ -128,7 +128,6 @@ sft_config = SFTConfig(
     learning_rate=2e-5,
     lr_scheduler_type="linear",
     optim="adamw_torch",
-    peft_config=peft_config,
     completion_only_loss=True,
     save_pretrained=True,
     logging_steps=1,
@@ -155,7 +154,8 @@ trainer = TimeLoggingTrainer(
     train_dataset=train_ds,
     eval_dataset=val_ds,
     tokenizer=tokenizer,
-    args=sft_config
+    args=sft_config,
+    peft_config=peft_config,
 )
 
 # --- STEP 5: Train with time logging
