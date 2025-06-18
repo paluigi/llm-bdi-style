@@ -15,10 +15,15 @@ import torch
 import pandas as pd
 from datasets import Dataset
 from trl import SFTTrainer, SFTConfig
-import evaluate
+from transformers import TrainingArguments
 import numpy as np
 
-metric = evaluate.load("accuracy")
+from evaluate import load
+# Load the metrics from Hugging Face's evaluate library
+bleu = load("bleu")
+chrf = load("chrf")
+wer = load("wer")
+cer = load("cer")
 
 tic = time.time()
 str_tic = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(tic))
@@ -151,10 +156,52 @@ train_dataset = split_dataset["train"]
 val_dataset = split_dataset["test"]
 
 
-def compute_metrics(eval_pred):
-    logits, labels = eval_pred
-    predictions = np.argmax(logits, axis=-1)
-    return metric.compute(predictions=predictions, references=labels)
+def preprocess_logits_for_metrics(logits, labels):
+    pred_ids = torch.argmax(logits, dim=-1)
+    return pred_ids, labels
+
+def compute_metrics(p):
+    print("=== In compute_metrics ===")
+
+    (preds, labels), _ = p
+    del _
+
+    labels[labels == -100] = tokenizer.pad_token_id
+    preds[preds == -100] = tokenizer.pad_token_id
+
+    try:
+        decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
+    except Exception as e:
+        print("Error during decoding predictions:", e)
+        raise e
+    try:
+        decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+    except Exception as e:
+        print("Error during decoding labels:", e)
+        raise e
+
+    # For BLEU/CHRF, references should be a list of lists (one inner list per example).
+    decoded_labels_bleu = [[label] for label in decoded_labels]
+
+    # Compute metrics.
+    bleu_score = bleu.compute(predictions=decoded_preds, references=decoded_labels_bleu)
+    chrf_score = chrf.compute(predictions=decoded_preds, references=decoded_labels_bleu)
+    chrfpp_score = chrf.compute(predictions=decoded_preds, references=decoded_labels_bleu, word_order=2)  # CHRF++ (bigram)
+    wer_score = wer.compute(predictions=decoded_preds, references=decoded_labels)
+    cer_score = cer.compute(predictions=decoded_preds, references=decoded_labels)
+
+    # print("Computed BLEU score:", bleu_score)
+    metrics = {
+        "bleu": bleu_score["bleu"],
+        "chrf": chrf_score["score"],
+        "chrf++": chrfpp_score["score"],
+        "wer": wer_score,
+        "cer": cer_score,
+    }
+
+    print(metrics)
+
+    return metrics
 
 # Logging
 toc = time.time()
@@ -168,7 +215,7 @@ trainer = SFTTrainer(
     train_dataset = train_dataset,
     eval_dataset = val_dataset, # Can set up evaluation!
     compute_metrics=compute_metrics,
-    args = SFTConfig(
+    args = TrainingArguments(
         dataset_text_field = "text",
         per_device_train_batch_size = 2,
         gradient_accumulation_steps = 4, # Use GA to mimic batch size!
@@ -184,6 +231,13 @@ trainer = SFTTrainer(
         seed = 3407,
         report_to = "none", # Use this for WandB etc
         dataset_num_proc=2,
+        eval_steps=2,  # Set how frequently to evaluate
+        eval_strategy="steps",
+        load_best_model_at_end=True,
+        save_strategy="steps",
+        save_steps=2, #double as eval steps (to stop time taken during saving)
+        greater_is_better=False,
+        metric_for_best_model="eval_loss",
     ),
 )
 
