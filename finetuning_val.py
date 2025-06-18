@@ -14,7 +14,8 @@ from unsloth.chat_templates import get_chat_template, train_on_responses_only
 import torch
 import pandas as pd
 from datasets import Dataset
-from trl import SFTTrainer, SFTConfig,TrainingArguments
+from trl import SFTTrainer, SFTConfig
+from transformers import TrainingArguments
 import evaluate
 import numpy as np
 
