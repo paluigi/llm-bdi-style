@@ -24,7 +24,7 @@ print(f"Start time: {str_tic}")
 model_path = "/leonardo_work/try25_boigenai/Luigi"
 output_path = "/leonardo/home/userexternal/lpalumbo/llm-bdi-style/results"
 
-gemma_path = os.path.join(model_path, "gemma-3-12b-it_finetuned_os")
+# gemma_path = os.path.join(model_path, "gemma-3-12b-it_finetuned_os")
 qwen_path = os.path.join(model_path, "Qwen2.5-7B-Instruct_finetuned_os")
 embedding_path= os.path.join(model_path, "jina-embeddings-v3")
 
@@ -130,43 +130,43 @@ str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
 print(f"Time: {str_toc}")
 
 
-# Gemma generation
-pipe = pipeline(
-    "text-generation",
-    model=gemma_path,
-    device_map="auto",
-    torch_dtype=torch.bfloat16
-)
+# # Gemma generation
+# pipe = pipeline(
+#     "text-generation",
+#     model=gemma_path,
+#     device_map="auto",
+#     torch_dtype=torch.bfloat16
+# )
 
-# Logging
-toc = time.time()
-print(f"Gemma loaded, {toc-tic:.1f} seconds elapsed.")
-str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
-print(f"Time: {str_toc}")
+# # Logging
+# toc = time.time()
+# print(f"Gemma loaded, {toc-tic:.1f} seconds elapsed.")
+# str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
+# print(f"Time: {str_toc}")
 
-output_gemma = []
+# output_gemma = []
 
-for par in input_formatted:
-    out = pipe(text_inputs=par, max_new_tokens=1024)
-    print(out)
-    output_gemma.append(out[0]["generated_text"][-1]["content"])
+# for par in input_formatted:
+#     out = pipe(text_inputs=par, max_new_tokens=1024)
+#     print(out)
+#     output_gemma.append(out[0]["generated_text"][-1]["content"])
 
-output_file = os.path.join(output_path, "output_gemma_os.txt")
-with open(output_file, "w", encoding="utf-8") as f:
-    for i, elem in enumerate(output_gemma):
-        f.write(str(elem))
-        if i != len(output_gemma) - 1:
-            f.write("\n\n")
+# output_file = os.path.join(output_path, "output_gemma_os.txt")
+# with open(output_file, "w", encoding="utf-8") as f:
+#     for i, elem in enumerate(output_gemma):
+#         f.write(str(elem))
+#         if i != len(output_gemma) - 1:
+#             f.write("\n\n")
 
-# Logging
-toc = time.time()
-print(f"Gemma generation done, {toc-tic:.1f} seconds elapsed.")
-str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
-print(f"Time: {str_toc}")
+# # Logging
+# toc = time.time()
+# print(f"Gemma generation done, {toc-tic:.1f} seconds elapsed.")
+# str_toc = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(toc))
+# print(f"Time: {str_toc}")
 
-# Show memory
-used_memory = round(torch.cuda.max_memory_reserved() / 1024 / 1024 / 1024, 3)
-print(f"Peak reserved memory = {used_memory} GB.")
+# # Show memory
+# used_memory = round(torch.cuda.max_memory_reserved() / 1024 / 1024 / 1024, 3)
+# print(f"Peak reserved memory = {used_memory} GB.")
 
 
 # qwen generation
