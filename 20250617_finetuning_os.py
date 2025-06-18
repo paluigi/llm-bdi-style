@@ -51,7 +51,7 @@ if tokenizer.pad_token is None:
 log_time("tokenizer loading", t0)
 
 # --- STEP 2: Load model
-model = AutoModelForCausalLM.from_pretrained(MODEL_PATH, torch_dtype=torch.float16)
+model = AutoModelForCausalLM.from_pretrained(MODEL_PATH, torch_dtype=torch.float16, device_map="auto",)
 log_time("model loading", t0)
 
 # --- STEP 3: Load and preprocess data

@@ -279,7 +279,7 @@ class LoraFineTuner:
             group_by_length=True,
             lr_scheduler_type="constant",
             report_to="none",
-            # evaluation_strategy="steps",  # Evaluate at regular steps
+            eval_strategy="steps",  # Evaluate at regular steps
             eval_steps=5,  # Evaluate every 5 steps
             load_best_model_at_end=True,
             metric_for_best_model="eval_loss",
