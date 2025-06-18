@@ -15,16 +15,8 @@ import torch
 import pandas as pd
 from datasets import Dataset
 from trl import SFTTrainer, SFTConfig
-from transformers import TrainingArguments
-import evaluate
 import numpy as np
 
-from evaluate import load
-# Load the metrics from Hugging Face's evaluate library
-bleu = load("bleu")
-chrf = load("chrf")
-wer = load("wer")
-cer = load("cer")
 
 
 tic = time.time()
@@ -148,54 +140,6 @@ train_dataset = split_dataset["train"]
 val_dataset = split_dataset["test"]
 
 
-def preprocess_logits_for_metrics(logits, labels):
-    pred_ids = torch.argmax(logits, dim=-1)
-    return pred_ids, labels
-
-def compute_metrics(p):
-    print("=== In compute_metrics ===")
-
-    (preds, labels), _ = p
-    del _
-
-    labels[labels == -100] = tokenizer.pad_token_id
-    preds[preds == -100] = tokenizer.pad_token_id
-
-    try:
-        decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
-    except Exception as e:
-        print("Error during decoding predictions:", e)
-        raise e
-    try:
-        decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
-    except Exception as e:
-        print("Error during decoding labels:", e)
-        raise e
-
-    # For BLEU/CHRF, references should be a list of lists (one inner list per example).
-    decoded_labels_bleu = [[label] for label in decoded_labels]
-
-    # Compute metrics.
-    bleu_score = bleu.compute(predictions=decoded_preds, references=decoded_labels_bleu)
-    chrf_score = chrf.compute(predictions=decoded_preds, references=decoded_labels_bleu)
-    chrfpp_score = chrf.compute(predictions=decoded_preds, references=decoded_labels_bleu, word_order=2)  # CHRF++ (bigram)
-    wer_score = wer.compute(predictions=decoded_preds, references=decoded_labels)
-    cer_score = cer.compute(predictions=decoded_preds, references=decoded_labels)
-
-    # print("Computed BLEU score:", bleu_score)
-    metrics = {
-        "bleu": bleu_score["bleu"],
-        "chrf": chrf_score["score"],
-        "chrf++": chrfpp_score["score"],
-        "wer": wer_score,
-        "cer": cer_score,
-    }
-
-    print(metrics)
-
-    return metrics
-
-
 # Logging
 toc = time.time()
 print(f"Dataset loaded, {toc-tic:.1f} seconds elapsed.")
@@ -207,9 +151,7 @@ trainer = SFTTrainer(
     tokenizer = tokenizer,
     train_dataset = train_dataset,
     eval_dataset = val_dataset, # Can set up evaluation!
-    compute_metrics=compute_metrics,
-    preprocess_logits_for_metrics=preprocess_logits_for_metrics, # required function, for saving logits memory in unsloth (found on github)
-    args = TrainingArguments(
+    args = SFTConfig(
         dataset_text_field = "text",
         per_device_train_batch_size = 2,
         gradient_accumulation_steps = 4, # Use GA to mimic batch size!
