@@ -252,23 +252,16 @@ class LoraFineTuner:
         """Create SFT configuration"""
         sft_config = SFTConfig(
             output_dir=self.output_dir,
+            overwrite_output_dir=True,
+            do_eval=True,
             max_seq_length=4096,
             packing=False,  # Set to True if you want to pack sequences
             dataset_text_field="text",
-        )
-        
-        return sft_config
-    
-    def create_training_arguments(self):
-        """Create training arguments separately"""
-        training_args = TrainingArguments(
-            output_dir=self.output_dir,
             max_steps = 600,
             per_device_train_batch_size=2,
             per_device_eval_batch_size=1,
             gradient_accumulation_steps=4,
             optim="paged_adamw_32bit",
-            save_steps=500,
             logging_steps=10,  # More frequent logging to see training progress
             learning_rate=2e-4,
             weight_decay=0.001,
@@ -288,6 +281,16 @@ class LoraFineTuner:
             data_seed=42,
             dataloader_num_workers=0,
             remove_unused_columns=False,
+            save_strategy="best",
+        )
+        
+        return sft_config
+    
+    def create_training_arguments(self):
+        """Create training arguments separately"""
+        training_args = TrainingArguments(
+            output_dir=self.output_dir,
+            
         )
         
         return training_args
@@ -312,13 +315,13 @@ class LoraFineTuner:
             model=self.model,
             train_dataset=self.train_dataset,
             eval_dataset=self.eval_dataset,
-            args=training_args,  # Use TrainingArguments instead of SFTConfig for training params
+            args=sft_config,  # Use TrainingArguments instead of SFTConfig for training params
             # tokenizer=self.tokenizer,
             data_collator=None,  # Will use default
             callbacks=[progress_callback],  # Add custom callback
-            max_seq_length=sft_config.max_seq_length,
-            packing=sft_config.packing,
-            dataset_text_field=sft_config.dataset_text_field,
+            # max_seq_length=sft_config.max_seq_length,
+            # packing=sft_config.packing,
+            # dataset_text_field=sft_config.dataset_text_field,
         )
         
         # Print initial training information
