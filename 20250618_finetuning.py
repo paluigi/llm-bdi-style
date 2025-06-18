@@ -313,7 +313,7 @@ class LoraFineTuner:
             train_dataset=self.train_dataset,
             eval_dataset=self.eval_dataset,
             args=training_args,  # Use TrainingArguments instead of SFTConfig for training params
-            tokenizer=self.tokenizer,
+            # tokenizer=self.tokenizer,
             data_collator=None,  # Will use default
             callbacks=[progress_callback],  # Add custom callback
             max_seq_length=sft_config.max_seq_length,
