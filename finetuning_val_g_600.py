@@ -27,20 +27,20 @@ print(f"Start time: {str_tic}")
 model_path = "/leonardo_work/try25_boigenai/Luigi"
 input_path = "/leonardo/home/userexternal/lpalumbo/llm-bdi-style/data"
 
-# Qwen
-model_name = "Qwen2.5-7B-Instruct"
-tokenizer_name = "Qwen2.5-7B-Instruct"
-chat_template = "qwen-2.5"
+# # Qwen
+# model_name = "Qwen2.5-7B-Instruct"
+# tokenizer_name = "Qwen2.5-7B-Instruct"
+# chat_template = "qwen-2.5"
 
 # # Mistral
 # model_name = "Mistral-Nemo-Instruct-FP8-2407"
 # tokenizer_name = "Mistral-Nemo-Instruct-FP8-2407"
 # chat_template = "mistral"
 
-# # Gemma
-# model_name = "gemma-3-12b-it"
-# tokenizer_name = "gemma-3-12b-it"
-# chat_template = "gemma3"
+# Gemma
+model_name = "gemma-3-12b-it"
+tokenizer_name = "gemma-3-12b-it"
+chat_template = "gemma3"
 
 print(f"Finetuning {model_name} with simple prompting...")
 
@@ -160,7 +160,7 @@ trainer = SFTTrainer(
         gradient_accumulation_steps = 4, # Use GA to mimic batch size!
         warmup_steps = 5,
         #num_train_epochs = 4, # Set this for 1 full training run.
-        max_steps = 200, # Set this to -1 for full training run, or to a number for partial training
+        max_steps = 600, # Set this to -1 for full training run, or to a number for partial training
         max_seq_length = 4096, # Choose any for long context!
         learning_rate = 2e-5, # Reduce to 2e-5 for long training runs
         logging_steps = 1,

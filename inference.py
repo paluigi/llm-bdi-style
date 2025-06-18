@@ -21,8 +21,8 @@ print(f"Start time: {str_tic}")
 model_path = "/leonardo_work/try25_boigenai/Luigi"
 output_path = "/leonardo/home/userexternal/lpalumbo/llm-bdi-style/results"
 
-gemma_path = os.path.join(model_path, "gemma-3-12b-it_finetuned")
-qwen_path = os.path.join(model_path, "Qwen2.5-7B-Instruct_finetuned")
+gemma_path = os.path.join(model_path, "gemma-3-12b-it_finetuned_val")
+qwen_path = os.path.join(model_path, "Qwen2.5-7B-Instruct_finetuned_val")
 
 input_list = [
     "In questa edizione sono state intervistate 1575 imprese di servizi e industria con almeno 50 addetti tra il 14 giugno e il 16 luglio.",

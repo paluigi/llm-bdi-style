@@ -24,8 +24,8 @@ print(f"Start time: {str_tic}")
 model_path = "/leonardo_work/try25_boigenai/Luigi"
 output_path = "/leonardo/home/userexternal/lpalumbo/llm-bdi-style/results"
 
-gemma_path = os.path.join(model_path, "gemma-3-12b-it_finetuned") # Using gemma from regular finetuning
-qwen_path = os.path.join(model_path, "Qwen2.5-7B-Instruct_finetuned_os")
+gemma_path = os.path.join(model_path, "gemma-3-12b-it_finetuned_val") # Using gemma from regular finetuning
+qwen_path = os.path.join(model_path, "Qwen2.5-7B-Instruct_finetuned_os_val")
 embedding_path= os.path.join(model_path, "jina-embeddings-v3")
 
 

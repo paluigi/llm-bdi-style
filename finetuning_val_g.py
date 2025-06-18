@@ -27,20 +27,20 @@ print(f"Start time: {str_tic}")
 model_path = "/leonardo_work/try25_boigenai/Luigi"
 input_path = "/leonardo/home/userexternal/lpalumbo/llm-bdi-style/data"
 
-# Qwen
-model_name = "Qwen2.5-7B-Instruct"
-tokenizer_name = "Qwen2.5-7B-Instruct"
-chat_template = "qwen-2.5"
+# # Qwen
+# model_name = "Qwen2.5-7B-Instruct"
+# tokenizer_name = "Qwen2.5-7B-Instruct"
+# chat_template = "qwen-2.5"
 
 # # Mistral
 # model_name = "Mistral-Nemo-Instruct-FP8-2407"
 # tokenizer_name = "Mistral-Nemo-Instruct-FP8-2407"
 # chat_template = "mistral"
 
-# # Gemma
-# model_name = "gemma-3-12b-it"
-# tokenizer_name = "gemma-3-12b-it"
-# chat_template = "gemma3"
+# Gemma
+model_name = "gemma-3-12b-it"
+tokenizer_name = "gemma-3-12b-it"
+chat_template = "gemma3"
 
 print(f"Finetuning {model_name} with simple prompting...")
 
