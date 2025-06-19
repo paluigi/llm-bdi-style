@@ -116,7 +116,7 @@ input_formatted = [
     [
         {
             "role": "user",
-            "content": instruction_template.format(bozza=row["input"], os_bozza=row["os_input"], os_test=row["os_testo"])
+            "content": instruction_template.format(bozza=row["input"], os_bozza=row["os_input"], os_testo=row["os_testo"])
         },
     ]
     for row in input_os_list
